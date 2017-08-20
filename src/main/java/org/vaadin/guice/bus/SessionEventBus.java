@@ -1,9 +1,5 @@
 package org.vaadin.guice.bus;
 
-import com.google.common.eventbus.EventBus;
-
-import com.vaadin.guice.annotation.VaadinSessionScope;
-
 /**
  * This class serves as a means to allow VaadinSession-scope communication between objects.
  * SessionEventBus is intended for events that are of 'VaadinSession-scope' interest, like updates
@@ -18,8 +14,5 @@ import com.vaadin.guice.annotation.VaadinSessionScope;
  *
  * @author Bernd Hopp (bernd@vaadin.com)
  */
-@VaadinSessionScope
-public final class SessionEventBus extends EventBus {
-    SessionEventBus() {
-    }
+public interface SessionEventBus extends EventBus {
 }
