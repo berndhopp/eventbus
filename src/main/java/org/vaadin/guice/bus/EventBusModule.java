@@ -1,32 +1,24 @@
 package org.vaadin.guice.bus;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.AbstractModule;
-import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.matcher.AbstractMatcher;
 
 import com.vaadin.guice.annotation.UIScope;
 import com.vaadin.guice.annotation.VaadinSessionScope;
 
-import static java.util.Arrays.stream;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 class EventBusModule extends AbstractModule {
 
     private final Provider<Injector> injectorProvider;
-    private final Class<? extends GlobalEventBus> globalEventBusClass;
+    private final EnableEventBus annotation;
 
     @SuppressWarnings("unused")
     EventBusModule(Provider<Injector> injectorProvider, EnableEventBus annotation) {
-        this.injectorProvider = injectorProvider;
-
-        if (!GlobalEventBus.class.equals(annotation.global())) {
-            this.globalEventBusClass = annotation.global();
-        } else {
-            this.globalEventBusClass = getDefaultImplementationClass();
-        }
+        this.annotation = checkNotNull(annotation);
+        this.injectorProvider = checkNotNull(injectorProvider);
     }
 
     @SuppressWarnings("unchecked")
@@ -40,33 +32,45 @@ class EventBusModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bindListener(new Matcher(), new ProvisionListener());
+
+        try {
+            bindListener(annotation.globalRegistrationMatcher().newInstance(), new ProvisionListener(GlobalEventBus.class));
+            bindListener(annotation.sessionRegistrationMatcher().newInstance(), new ProvisionListener(SessionEventBus.class));
+            bindListener(annotation.uiRegistrationMatcher().newInstance(), new ProvisionListener(UIEventBus.class));
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        Class<? extends GlobalEventBus> globalEventBusClass;
+
+        if (!GlobalEventBus.class.equals(annotation.globalEventBus())) {
+            globalEventBusClass = annotation.globalEventBus();
+        } else {
+            globalEventBusClass = getDefaultImplementationClass();
+        }
 
         bind(GlobalEventBus.class).to(globalEventBusClass).in(Singleton.class);
-        bind(SessionEventBus.class).to(SessionEventBusImpl.class).in(VaadinSessionScope.class);
-        bind(UIEventBus.class).to(UIEventBusImpl.class).in(UIScope.class);
-    }
 
-    private static class Matcher extends AbstractMatcher<Binding<?>> {
-        @Override
-        public boolean matches(Binding<?> binding) {
-            final Class<?> rawType = binding.getKey().getTypeLiteral().getRawType();
+        bind(SessionEventBus.class).to(annotation.sessionEventBus()).in(VaadinSessionScope.class);
 
-            return stream(rawType.getDeclaredMethods())
-                    .anyMatch(method -> method.isAnnotationPresent(Subscribe.class));
-        }
+        bind(UIEventBus.class).to(annotation.uiEventBus()).in(UIScope.class);
     }
 
     private class ProvisionListener implements com.google.inject.spi.ProvisionListener {
+
+        private final Class<? extends EventBus> busClass;
+
+        private ProvisionListener(Class<? extends EventBus> busClass) {
+            this.busClass = busClass;
+        }
+
         @Override
         public <T> void onProvision(ProvisionInvocation<T> provisionInvocation) {
             final T t = provisionInvocation.provision();
 
             final Injector injector = injectorProvider.get();
 
-            injector.getInstance(GlobalEventBus.class).register(t);
-            injector.getInstance(SessionEventBus.class).register(t);
-            injector.getInstance(UIEventBus.class).register(t);
+            injector.getInstance(busClass).register(t);
         }
     }
 }
