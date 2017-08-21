@@ -9,10 +9,10 @@ import com.vaadin.server.VaadinSession;
 
 import org.vaadin.guice.bus.GlobalEventBus;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @SuppressWarnings("unused")
 class GlobalEventBusImpl extends EventBus implements GlobalEventBus, SessionDestroyListener {
 
-    private final Map<VaadinSession, Set<Object>> registeredObjectsBySession = new HashMap<>();
+    private final Map<VaadinSession, Set<Object>> registeredObjectsBySession = new ConcurrentHashMap<>();
 
     GlobalEventBusImpl() {
         super("default", MoreExecutors.directExecutor(), new UIDispatcher(), LoggingHandler.INSTANCE);
