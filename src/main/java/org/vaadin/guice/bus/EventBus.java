@@ -2,6 +2,7 @@ package org.vaadin.guice.bus;
 
 /**
  * an interface that mimicks the guava EventBus
+ *
  * @author Bernd Hopp
  * @see com.google.common.eventbus.EventBus
  */

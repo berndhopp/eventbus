@@ -16,6 +16,6 @@ import com.vaadin.server.VaadinSession;
  *
  * @author Bernd Hopp (bernd@vaadin.com)
  */
-public interface GlobalEventBus extends org.vaadin.guice.bus.EventBus {
+public interface GlobalEventBus extends EventBus {
 }
 

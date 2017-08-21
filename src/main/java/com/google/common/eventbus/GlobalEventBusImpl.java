@@ -17,8 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * a global eventbus that dispatches to the correct ui and prevents
- * memory leaks
+ * a global eventbus that dispatches to the correct ui and prevents memory leaks
  */
 @SuppressWarnings("unused")
 class GlobalEventBusImpl extends EventBus implements GlobalEventBus, SessionDestroyListener {
