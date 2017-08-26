@@ -23,6 +23,15 @@ import java.lang.annotation.Target;
 public @interface EnableEventBus {
 
     /**
+     * true, if objects should be auto-registered at the eventbus, otherwise false
+     *
+     * @see EnableEventBus#globalRegistrationMatcher()
+     * @see EnableEventBus#sessionRegistrationMatcher()
+     * @see EnableEventBus#uiRegistrationMatcher()
+     */
+    boolean enableAutoRegistration() default true;
+
+    /**
      * the default implementation of a GlobalEventBus can be overwritten here, if a distributed
      * eventbus is to be used. The default-implementation will take care of dispatching to the
      * correct thread and preventing memory-leaks that would occur if components are registered at

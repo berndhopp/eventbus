@@ -33,12 +33,14 @@ class EventBusModule extends AbstractModule {
     @Override
     protected void configure() {
 
-        try {
-            bindListener(annotation.globalRegistrationMatcher().newInstance(), new ProvisionListener(GlobalEventBus.class));
-            bindListener(annotation.sessionRegistrationMatcher().newInstance(), new ProvisionListener(SessionEventBus.class));
-            bindListener(annotation.uiRegistrationMatcher().newInstance(), new ProvisionListener(UIEventBus.class));
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        if (annotation.enableAutoRegistration()) {
+            try {
+                bindListener(annotation.globalRegistrationMatcher().newInstance(), new ProvisionListener(GlobalEventBus.class));
+                bindListener(annotation.sessionRegistrationMatcher().newInstance(), new ProvisionListener(SessionEventBus.class));
+                bindListener(annotation.uiRegistrationMatcher().newInstance(), new ProvisionListener(UIEventBus.class));
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         Class<? extends GlobalEventBus> globalEventBusClass;
