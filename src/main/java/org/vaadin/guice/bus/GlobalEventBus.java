@@ -2,6 +2,8 @@ package org.vaadin.guice.bus;
 
 import com.vaadin.server.VaadinSession;
 
+import org.vaadin.guice.bus.api.GlobalEvent;
+
 /**
  * This class serves as a means to allow application-scope communication between objects.
  * GlobalEventBus is intended for events that are of 'global' interest, like updates to data that is
@@ -16,6 +18,6 @@ import com.vaadin.server.VaadinSession;
  *
  * @author Bernd Hopp (bernd@vaadin.com)
  */
-public interface GlobalEventBus extends EventBus {
+public interface GlobalEventBus extends EventBus<GlobalEvent> {
 }
 

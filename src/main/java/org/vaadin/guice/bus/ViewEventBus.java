@@ -16,5 +16,5 @@ import org.vaadin.guice.bus.api.SessionEvent;
  *
  * @author Bernd Hopp (bernd@vaadin.com)
  */
-public interface SessionEventBus extends EventBus<SessionEvent> {
+public interface ViewEventBus extends EventBus<SessionEvent> {
 }

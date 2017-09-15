@@ -2,12 +2,15 @@ package com.google.common.eventbus;
 
 import com.google.common.util.concurrent.MoreExecutors;
 
+import com.vaadin.server.ServiceInitEvent;
 import com.vaadin.server.SessionDestroyEvent;
 import com.vaadin.server.SessionDestroyListener;
 import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServiceInitListener;
 import com.vaadin.server.VaadinSession;
 
 import org.vaadin.guice.bus.GlobalEventBus;
+import org.vaadin.guice.bus.api.GlobalEvent;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -20,13 +23,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * a global eventbus that dispatches to the correct ui and prevents memory leaks
  */
 @SuppressWarnings("unused")
-class GlobalEventBusImpl extends EventBus implements GlobalEventBus, SessionDestroyListener {
+class GlobalEventBusImpl extends EventBus implements GlobalEventBus, VaadinServiceInitListener, SessionDestroyListener {
 
     private final Map<VaadinSession, Set<Object>> registeredObjectsBySession = new ConcurrentHashMap<>();
 
     GlobalEventBusImpl() {
-        super("default", MoreExecutors.directExecutor(), new UIDispatcher(), LoggingHandler.INSTANCE);
-        VaadinService.getCurrent().addSessionDestroyListener(this);
+        super("vaadin-global", MoreExecutors.directExecutor(), new VaadinGlobalDispatcher(), LoggingHandler.INSTANCE);
     }
 
     @Override
@@ -55,6 +57,16 @@ class GlobalEventBusImpl extends EventBus implements GlobalEventBus, SessionDest
         }
 
         super.unregister(object);
+    }
+
+    @Override
+    public void post(GlobalEvent globalEvent) {
+        super.post(globalEvent);
+    }
+
+    @Override
+    public void serviceInit(ServiceInitEvent event) {
+        VaadinService.getCurrent().addSessionDestroyListener(this);
     }
 
     @Override

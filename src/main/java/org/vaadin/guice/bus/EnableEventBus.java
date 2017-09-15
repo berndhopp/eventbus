@@ -23,15 +23,6 @@ import java.lang.annotation.Target;
 public @interface EnableEventBus {
 
     /**
-     * true, if objects should be auto-registered at the eventbus, otherwise false
-     *
-     * @see EnableEventBus#globalRegistrationMatcher()
-     * @see EnableEventBus#sessionRegistrationMatcher()
-     * @see EnableEventBus#uiRegistrationMatcher()
-     */
-    boolean enableAutoRegistration() default true;
-
-    /**
      * the default implementation of a GlobalEventBus can be overwritten here, if a distributed
      * eventbus is to be used. The default-implementation will take care of dispatching to the
      * correct thread and preventing memory-leaks that would occur if components are registered at
@@ -45,13 +36,19 @@ public @interface EnableEventBus {
      * the implementation of a {@link SessionEventBus}. If not overwritten, it defaults to a
      * guava-{@link com.google.common.eventbus.EventBus}.
      */
-    Class<? extends SessionEventBus> sessionEventBus() default SessionEventBusImpl.class;
+    Class<? extends SessionEventBus> sessionEventBus() default SessionEventBus.class;
 
     /**
      * the implementation of a {@link UIEventBus}. If not overwritten, it defaults to a guava-{@link
      * com.google.common.eventbus.EventBus}.
      */
-    Class<? extends UIEventBus> uiEventBus() default UIEventBusImpl.class;
+    Class<? extends UIEventBus> uiEventBus() default UIEventBus.class;
+
+    /**
+     * the implementation of a {@link ViewEventBus}. If not overwritten, it defaults to a guava-{@link
+     * com.google.common.eventbus.EventBus}.
+     */
+    Class<? extends ViewEventBus> viewEventBus() default ViewEventBus.class;
 
     /**
      * the {@link Matcher} for bindings where instances should be registered on the {@link
@@ -59,7 +56,7 @@ public @interface EnableEventBus {
      *
      * @see com.google.inject.AbstractModule#bindListener(Matcher, ProvisionListener...)
      */
-    Class<? extends Matcher<Binding<?>>> globalRegistrationMatcher() default DefaultMatcher.class;
+    Class<? extends Matcher<Binding<?>>> globalRegistrationMatcher() default GlobalMatcher.class;
 
     /**
      * the {@link Matcher} for bindings where instances should be registered on the {@link
@@ -67,7 +64,7 @@ public @interface EnableEventBus {
      *
      * @see com.google.inject.AbstractModule#bindListener(Matcher, ProvisionListener...)
      */
-    Class<? extends Matcher<Binding<?>>> sessionRegistrationMatcher() default DefaultMatcher.class;
+    Class<? extends Matcher<Binding<?>>> sessionRegistrationMatcher() default SessionMatcher.class;
 
     /**
      * the {@link Matcher} for bindings where instances should be registered on the {@link
@@ -75,5 +72,13 @@ public @interface EnableEventBus {
      *
      * @see com.google.inject.AbstractModule#bindListener(Matcher, ProvisionListener...)
      */
-    Class<? extends Matcher<Binding<?>>> uiRegistrationMatcher() default DefaultMatcher.class;
+    Class<? extends Matcher<Binding<?>>> uiRegistrationMatcher() default UIMatcher.class;
+
+    /**
+     * the {@link Matcher} for bindings where instances should be registered on the {@link
+     * ViewEventBus}
+     *
+     * @see com.google.inject.AbstractModule#bindListener(Matcher, ProvisionListener...)
+     */
+    Class<? extends Matcher<Binding<?>>> viewRegistrationMatcher() default ViewMatcher.class;
 }
