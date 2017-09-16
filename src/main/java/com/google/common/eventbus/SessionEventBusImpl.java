@@ -8,7 +8,7 @@ import org.vaadin.guice.bus.api.SessionEvent;
 final class SessionEventBusImpl extends EventBus implements SessionEventBus {
 
     SessionEventBusImpl(){
-        super("vaadin-session", MoreExecutors.directExecutor(), new CancelAwareDispatcher(), LoggingHandler.INSTANCE);
+        super("vaadin-session", MoreExecutors.directExecutor(), Dispatcher.immediate(), LoggingHandler.INSTANCE);
     }
 
     @Override

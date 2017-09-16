@@ -8,7 +8,6 @@ import org.vaadin.guice.bus.api.Event;
  * @author Bernd Hopp
  * @see com.google.common.eventbus.EventBus
  */
-@SuppressWarnings("unused")
 public interface EventBus<T extends Event> {
     void register(Object o);
 

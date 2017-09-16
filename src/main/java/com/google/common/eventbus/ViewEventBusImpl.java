@@ -8,7 +8,7 @@ import org.vaadin.guice.bus.api.UIEvent;
 final class ViewEventBusImpl extends EventBus implements UIEventBus {
 
     ViewEventBusImpl(){
-        super("vaadin-view", MoreExecutors.directExecutor(), new CancelAwareDispatcher(), LoggingHandler.INSTANCE);
+        super("vaadin-view", MoreExecutors.directExecutor(), Dispatcher.immediate(), LoggingHandler.INSTANCE);
     }
 
 
