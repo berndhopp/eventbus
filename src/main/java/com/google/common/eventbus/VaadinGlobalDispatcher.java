@@ -1,11 +1,13 @@
 package com.google.common.eventbus;
 
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.UI;
 
 import org.vaadin.guice.bus.api.GlobalEvent;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 final class VaadinGlobalDispatcher extends Dispatcher {
     @Override
@@ -19,17 +21,25 @@ final class VaadinGlobalDispatcher extends Dispatcher {
                 UI ui = ((Component)subscriber.target).getUI();
 
                 if(ui != null){
-                    ui.access(
-                        () -> {
-                            if(!globalEvent.isCancelled()){
-                                subscriber.dispatchEvent(globalEvent);
+
+                    final Predicate<VaadinSession> vaadinSessionPredicate = globalEvent.sessionPredicate();
+
+                    if(vaadinSessionPredicate != null){
+                        final VaadinSession session = ui.getSession();
+
+                        if(vaadinSessionPredicate.test(session)){
+                            subscriber.dispatchEvent(globalEvent);
+
+                            if(globalEvent.cancelAfterDispatch()){
+                                return;
                             }
                         }
-                    );
-
-                    if(globalEvent.isCancelled()){
-                        break;
+                    } else {
+                        ui.access(
+                            () -> subscriber.dispatchEvent(globalEvent)
+                        );
                     }
+
                 }
             } else {
                 subscriber.dispatchEvent(globalEvent);

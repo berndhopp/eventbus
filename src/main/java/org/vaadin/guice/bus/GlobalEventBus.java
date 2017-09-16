@@ -4,6 +4,8 @@ import com.vaadin.server.VaadinSession;
 
 import org.vaadin.guice.bus.api.GlobalEvent;
 
+import java.util.function.Predicate;
+
 /**
  * This class serves as a means to allow application-scope communication between objects.
  * GlobalEventBus is intended for events that are of 'global' interest, like updates to data that is

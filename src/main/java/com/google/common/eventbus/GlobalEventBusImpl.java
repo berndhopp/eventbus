@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -75,6 +76,18 @@ class GlobalEventBusImpl extends EventBus implements GlobalEventBus, VaadinServi
 
         if (registeredObjects != null) {
             registeredObjects.forEach(super::unregister);
+        }
+    }
+
+    static class EventWrapper{
+        final GlobalEvent globalEvent;
+        final Predicate<VaadinSession> sessionPredicate;
+        final boolean cancelAfterDisposal;
+
+        EventWrapper(GlobalEvent globalEvent, Predicate<VaadinSession> sessionPredicate, boolean cancelAfterDisposal) {
+            this.globalEvent = globalEvent;
+            this.sessionPredicate = sessionPredicate;
+            this.cancelAfterDisposal = cancelAfterDisposal;
         }
     }
 }
