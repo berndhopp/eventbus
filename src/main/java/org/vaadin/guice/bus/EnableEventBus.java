@@ -30,25 +30,25 @@ public @interface EnableEventBus {
      *
      * @see com.vaadin.ui.UI#access(Runnable)
      */
-    Class<? extends GlobalEventBus> globalEventBus() default GlobalEventBus.class;
+    Class<? extends GlobalEventBus> globalEventBus() default GlobalEventBusImpl.class;
 
     /**
      * the implementation of a {@link SessionEventBus}. If not overwritten, it defaults to a
      * guava-{@link com.google.common.eventbus.EventBus}.
      */
-    Class<? extends SessionEventBus> sessionEventBus() default SessionEventBus.class;
+    Class<? extends SessionEventBus> sessionEventBus() default SessionEventBusImpl.class;
 
     /**
      * the implementation of a {@link UIEventBus}. If not overwritten, it defaults to a guava-{@link
      * com.google.common.eventbus.EventBus}.
      */
-    Class<? extends UIEventBus> uiEventBus() default UIEventBus.class;
+    Class<? extends UIEventBus> uiEventBus() default UIEventBusImpl.class;
 
     /**
      * the implementation of a {@link ViewEventBus}. If not overwritten, it defaults to a guava-{@link
      * com.google.common.eventbus.EventBus}.
      */
-    Class<? extends ViewEventBus> viewEventBus() default ViewEventBus.class;
+    Class<? extends ViewEventBus> viewEventBus() default ViewEventBusImpl.class;
 
     /**
      * the {@link Matcher} for bindings where instances should be registered on the {@link

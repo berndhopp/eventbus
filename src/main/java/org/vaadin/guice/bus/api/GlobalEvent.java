@@ -1,16 +1,14 @@
 package org.vaadin.guice.bus.api;
 
-import com.vaadin.server.VaadinSession;
+public abstract class GlobalEvent implements CancellableEvent {
 
-import java.util.function.Predicate;
+    private boolean isCancelled;
 
-public interface GlobalEvent extends Event {
-
-    default Predicate<VaadinSession> sessionPredicate(){
-        return null;
+    public void cancel(){
+        isCancelled = true;
     }
 
-    default boolean cancelAfterDispatch(){
-        return false;
+    public boolean isCancelled(){
+        return isCancelled;
     }
 }

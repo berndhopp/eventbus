@@ -1,6 +1,6 @@
 package org.vaadin.guice.bus;
 
-import org.vaadin.guice.bus.api.SessionEvent;
+import org.vaadin.guice.bus.api.ViewEvent;
 
 /**
  * This class serves as a means to allow VaadinSession-scope communication between objects.
@@ -16,5 +16,5 @@ import org.vaadin.guice.bus.api.SessionEvent;
  *
  * @author Bernd Hopp (bernd@vaadin.com)
  */
-public interface ViewEventBus extends EventBus<SessionEvent> {
+public interface ViewEventBus extends EventBus<ViewEvent> {
 }

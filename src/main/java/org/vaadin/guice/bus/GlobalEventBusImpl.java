@@ -1,5 +1,7 @@
-package com.google.common.eventbus;
+package org.vaadin.guice.bus;
 
+import com.google.common.eventbus.CancellableEventDispatcher;
+import com.google.common.eventbus.ExtendableEventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import com.vaadin.server.ServiceInitEvent;
@@ -9,28 +11,26 @@ import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServiceInitListener;
 import com.vaadin.server.VaadinSession;
 
-import org.vaadin.guice.bus.GlobalEventBus;
 import org.vaadin.guice.bus.api.GlobalEvent;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Predicate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * a global eventbus that dispatches to the correct ui and prevents memory leaks
+ * a global eventbus that prevents memory leaks
  */
 @SuppressWarnings("unused")
-class GlobalEventBusImpl extends EventBus implements GlobalEventBus, VaadinServiceInitListener, SessionDestroyListener {
+class GlobalEventBusImpl extends ExtendableEventBus implements GlobalEventBus, VaadinServiceInitListener, SessionDestroyListener {
+
+    GlobalEventBusImpl(){
+        super("vaadin-global-eventbus", MoreExecutors.directExecutor(), new CancellableEventDispatcher());
+    }
 
     private final Map<VaadinSession, Set<Object>> registeredObjectsBySession = new ConcurrentHashMap<>();
-
-    GlobalEventBusImpl() {
-        super("vaadin-global", MoreExecutors.directExecutor(), new VaadinGlobalDispatcher(), LoggingHandler.INSTANCE);
-    }
 
     @Override
     public void register(Object object) {
@@ -76,18 +76,6 @@ class GlobalEventBusImpl extends EventBus implements GlobalEventBus, VaadinServi
 
         if (registeredObjects != null) {
             registeredObjects.forEach(super::unregister);
-        }
-    }
-
-    static class EventWrapper{
-        final GlobalEvent globalEvent;
-        final Predicate<VaadinSession> sessionPredicate;
-        final boolean cancelAfterDisposal;
-
-        EventWrapper(GlobalEvent globalEvent, Predicate<VaadinSession> sessionPredicate, boolean cancelAfterDisposal) {
-            this.globalEvent = globalEvent;
-            this.sessionPredicate = sessionPredicate;
-            this.cancelAfterDisposal = cancelAfterDisposal;
         }
     }
 }

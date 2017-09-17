@@ -13,11 +13,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 class EventBusModule extends AbstractModule {
 
-    private final Class<? extends GlobalEventBus> defaultGlobalEventBusClass;
-    private final Class<? extends SessionEventBus> defaultSessionEventBusClass;
-    private final Class<? extends UIEventBus> defaultUIEventBusClass;
-    private final Class<? extends ViewEventBus> defaultViewEventBusClass;
-
     private final Provider<Injector> injectorProvider;
     private final EnableEventBus annotation;
 
@@ -25,10 +20,6 @@ class EventBusModule extends AbstractModule {
     EventBusModule(Provider<Injector> injectorProvider, EnableEventBus annotation) throws ClassNotFoundException {
         this.annotation = checkNotNull(annotation);
         this.injectorProvider = checkNotNull(injectorProvider);
-        defaultGlobalEventBusClass = (Class<? extends GlobalEventBus>) Class.forName("com.google.common.eventbus.GlobalEventBusImpl");
-        defaultSessionEventBusClass= (Class<? extends SessionEventBus>) Class.forName("com.google.common.eventbus.SessionEventBusImpl");
-        defaultUIEventBusClass = (Class<? extends UIEventBus>) Class.forName("com.google.common.eventbus.UIEventBusImpl");
-        defaultViewEventBusClass = (Class<? extends ViewEventBus>) Class.forName("com.google.common.eventbus.ViewEventBusImpl");
     }
 
     @Override
@@ -42,15 +33,10 @@ class EventBusModule extends AbstractModule {
             throw new RuntimeException(e);
         }
 
-        Class<? extends GlobalEventBus> globalEventBusClass = GlobalEventBus.class.equals(annotation.globalEventBus()) ? defaultGlobalEventBusClass : annotation.globalEventBus();
-        Class<? extends SessionEventBus> sessionEventBusClass = SessionEventBus.class.equals(annotation.sessionEventBus()) ? defaultSessionEventBusClass : annotation.sessionEventBus();
-        Class<? extends UIEventBus> uiEventBusClass = UIEventBus.class.equals(annotation.uiEventBus()) ? defaultUIEventBusClass : annotation.uiEventBus();
-        Class<? extends ViewEventBus> viewEventBusClass = ViewEventBus.class.equals(annotation.viewEventBus()) ? defaultViewEventBusClass : annotation.viewEventBus();
-
-        bind(GlobalEventBus.class).to(globalEventBusClass).in(Singleton.class);
-        bind(SessionEventBus.class).to(sessionEventBusClass).in(VaadinSessionScope.class);
-        bind(UIEventBus.class).to(uiEventBusClass).in(UIScope.class);
-        bind(ViewEventBus.class).to(viewEventBusClass).in(ViewScope.class);
+        bind(GlobalEventBus.class).to(annotation.globalEventBus()).in(Singleton.class);
+        bind(SessionEventBus.class).to(annotation.sessionEventBus()).in(VaadinSessionScope.class);
+        bind(UIEventBus.class).to(annotation.uiEventBus()).in(UIScope.class);
+        bind(ViewEventBus.class).to(annotation.viewEventBus()).in(ViewScope.class);
     }
 
     private class Registrator implements com.google.inject.spi.ProvisionListener {
