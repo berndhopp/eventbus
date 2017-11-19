@@ -6,7 +6,7 @@
 
     <groupId>org.vaadin.guice</groupId>
     <artifactId>eventbus</artifactId>
-    <version>2.0.beta1</version>
+    <version>2.0.FINAL</version>
     <properties>
         <Vaadin-License-Title>Apache License 2.0</Vaadin-License-Title>
         <Implementation-Title>Guice-Vaadin EventBus-Addon</Implementation-Title>
