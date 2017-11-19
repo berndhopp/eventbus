@@ -3,11 +3,6 @@ package org.vaadin.guice.bus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
-import com.google.inject.Singleton;
-
-import com.vaadin.guice.annotation.UIScope;
-import com.vaadin.guice.annotation.VaadinSessionScope;
-import com.vaadin.guice.annotation.ViewScope;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -33,10 +28,10 @@ class EventBusModule extends AbstractModule {
             throw new RuntimeException(e);
         }
 
-        bind(GlobalEventBus.class).to(annotation.globalEventBus()).in(Singleton.class);
-        bind(SessionEventBus.class).to(annotation.sessionEventBus()).in(VaadinSessionScope.class);
-        bind(UIEventBus.class).to(annotation.uiEventBus()).in(UIScope.class);
-        bind(ViewEventBus.class).to(annotation.viewEventBus()).in(ViewScope.class);
+        bind(GlobalEventBus.class).to(annotation.globalEventBus());
+        bind(SessionEventBus.class).to(annotation.sessionEventBus());
+        bind(UIEventBus.class).to(annotation.uiEventBus());
+        bind(ViewEventBus.class).to(annotation.viewEventBus());
     }
 
     private class Registrator implements com.google.inject.spi.ProvisionListener {
