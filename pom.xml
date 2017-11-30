@@ -10,6 +10,7 @@
     <properties>
         <Vaadin-License-Title>Apache License 2.0</Vaadin-License-Title>
         <Implementation-Title>Guice-Vaadin EventBus-Addon</Implementation-Title>
+        <Implementation-Vendor>Bernd Hopp</Implementation-Vendor>
         <maven-surefire-plugin.version>2.10</maven-surefire-plugin.version>
         <maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
     </properties>
@@ -43,6 +44,7 @@
                             <Implementation-Title>${Implementation-Title}</Implementation-Title>
                             <!-- Package format version - do not change -->
                             <Vaadin-Package-Version>1</Vaadin-Package-Version>
+                            <Implementation-Vendor>${Implementation-Vendor}</Implementation-Vendor>
                             <Vaadin-License-Title>${Vaadin-License-Title}</Vaadin-License-Title>
                         </manifestEntries>
                     </archive>
@@ -65,6 +67,7 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                         <manifestEntries>
+                            <Implementation-Vendor>${Implementation-Vendor}</Implementation-Vendor>
                             <Implementation-Title>${Implementation-Title}</Implementation-Title>
                             <Vaadin-Package-Version>1</Vaadin-Package-Version>
                             <Vaadin-License-Title>${Vaadin-License-Title}</Vaadin-License-Title>
