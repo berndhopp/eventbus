@@ -6,36 +6,27 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.vaadin.guice.annotation.UIScope;
 import com.vaadin.guice.annotation.VaadinSessionScope;
-import com.vaadin.guice.annotation.ViewScope;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-class EventBusModule extends AbstractModule {
+public class EventBusModule extends AbstractModule {
 
     private final Provider<Injector> injectorProvider;
-    private final EnableEventBus annotation;
 
     @SuppressWarnings("unused, unchecked")
-    EventBusModule(Provider<Injector> injectorProvider, EnableEventBus annotation) throws ClassNotFoundException {
-        this.annotation = checkNotNull(annotation);
+    public EventBusModule(Provider<Injector> injectorProvider) {
         this.injectorProvider = checkNotNull(injectorProvider);
     }
 
     @Override
     protected void configure() {
-        try {
-            bindListener(annotation.globalRegistrationMatcher().newInstance(), new Registrator(GlobalEventBus.class));
-            bindListener(annotation.sessionRegistrationMatcher().newInstance(), new Registrator(SessionEventBus.class));
-            bindListener(annotation.uiRegistrationMatcher().newInstance(), new Registrator(UIEventBus.class));
-            bindListener(annotation.viewRegistrationMatcher().newInstance(), new Registrator(ViewEventBus.class));
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        bindListener(new GlobalMatcher(), new Registrator(GlobalEventBus.class));
+        bindListener(new SessionMatcher(), new Registrator(SessionEventBus.class));
+        bindListener(new UIMatcher(), new Registrator(UIEventBus.class));
 
-        bind(GlobalEventBus.class).to(annotation.globalEventBus()).in(Singleton.class);
-        bind(SessionEventBus.class).to(annotation.sessionEventBus()).in(VaadinSessionScope.class);
-        bind(UIEventBus.class).to(annotation.uiEventBus()).in(UIScope.class);
-        bind(ViewEventBus.class).to(annotation.viewEventBus()).in(ViewScope.class);
+        bind(GlobalEventBus.class).to(GlobalEventBusImpl.class).in(Singleton.class);
+        bind(SessionEventBus.class).to(SessionEventBusImpl.class).in(VaadinSessionScope.class);
+        bind(UIEventBus.class).to(UIEventBusImpl.class).in(UIScope.class);
     }
 
     private class Registrator implements com.google.inject.spi.ProvisionListener {

@@ -8,7 +8,6 @@ public class MockBusModule extends AbstractModule{
     protected void configure() {
         bind(GlobalEventBus.class).to(GlobalEventBusImpl.class).in(Singleton.class);
         bind(UIEventBus.class).to(UIEventBusImpl.class).in(Singleton.class);
-        bind(ViewEventBus.class).to(ViewEventBusImpl.class).in(Singleton.class);
         bind(SessionEventBus.class).to(SessionEventBusImpl.class).in(Singleton.class);
     }
 }
