@@ -1,10 +1,9 @@
 package org.vaadin.guice.bus;
 
-import com.vaadin.server.VaadinSession;
+
+import com.vaadin.flow.server.VaadinSession;
 
 import org.vaadin.guice.bus.api.GlobalEvent;
-
-import java.util.function.Predicate;
 
 /**
  * This class serves as a means to allow application-scope communication between objects.

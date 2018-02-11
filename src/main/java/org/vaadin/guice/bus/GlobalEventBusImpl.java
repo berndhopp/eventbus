@@ -4,12 +4,12 @@ import com.google.common.eventbus.CancellableEventDispatcher;
 import com.google.common.eventbus.ExtendableEventBus;
 import com.google.common.util.concurrent.MoreExecutors;
 
-import com.vaadin.server.ServiceInitEvent;
-import com.vaadin.server.SessionDestroyEvent;
-import com.vaadin.server.SessionDestroyListener;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinServiceInitListener;
-import com.vaadin.server.VaadinSession;
+import com.vaadin.flow.server.ServiceInitEvent;
+import com.vaadin.flow.server.SessionDestroyEvent;
+import com.vaadin.flow.server.SessionDestroyListener;
+import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.server.VaadinServiceInitListener;
+import com.vaadin.flow.server.VaadinSession;
 
 import org.vaadin.guice.bus.api.GlobalEvent;
 
