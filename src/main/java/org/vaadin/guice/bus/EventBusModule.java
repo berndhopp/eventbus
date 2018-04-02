@@ -1,49 +1,44 @@
 package org.vaadin.guice.bus;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
-import com.google.inject.Singleton;
-import com.vaadin.guice.annotation.UIScope;
-import com.vaadin.guice.annotation.VaadinSessionScope;
+import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.spi.ProvisionListener;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.reflections.Reflections;
 
-public class EventBusModule extends AbstractModule {
+import java.util.Set;
 
+class EventBusModule extends AbstractModule {
+
+    private final Reflections reflections;
     private final Provider<Injector> injectorProvider;
 
-    @SuppressWarnings("unused, unchecked")
-    public EventBusModule(Provider<Injector> injectorProvider) {
-        this.injectorProvider = checkNotNull(injectorProvider);
+    EventBusModule(Reflections reflections, Provider<Injector> injectorProvider){
+        this.reflections = reflections;
+        this.injectorProvider = injectorProvider;
     }
 
     @Override
     protected void configure() {
-        bindListener(new GlobalMatcher(), new Registrator(GlobalEventBus.class));
-        bindListener(new SessionMatcher(), new Registrator(SessionEventBus.class));
-        bindListener(new UIMatcher(), new Registrator(UIEventBus.class));
+        final Set<Class<?>> typesToRegister = reflections.getTypesAnnotatedWith(RegisterOn.class);
 
-        bind(GlobalEventBus.class).to(GlobalEventBusImpl.class).in(Singleton.class);
-        bind(SessionEventBus.class).to(SessionEventBusImpl.class).in(VaadinSessionScope.class);
-        bind(UIEventBus.class).to(UIEventBusImpl.class).in(UIScope.class);
-    }
+        typesToRegister.forEach(typeToRegister -> {
+            final Class<? extends EventBus> value = typeToRegister.getAnnotation(RegisterOn.class).value();
 
-    private class Registrator implements com.google.inject.spi.ProvisionListener {
-
-        private final Class<? extends EventBus> busClass;
-
-        private Registrator(Class<? extends EventBus> busClass) {
-            this.busClass = busClass;
-        }
-
-        @Override
-        public <T> void onProvision(ProvisionInvocation<T> provisionInvocation) {
-            final T t = provisionInvocation.provision();
-
-            final Injector injector = injectorProvider.get();
-
-            injector.getInstance(busClass).register(t);
-        }
+            bindListener(new AbstractMatcher<Binding<?>>() {
+                @Override
+                public boolean matches(Binding<?> binding) {
+                    return typeToRegister.equals(binding.getKey().getTypeLiteral().getRawType());
+                }
+            }, new ProvisionListener() {
+                @Override
+                public <T> void onProvision(ProvisionInvocation<T> provisionInvocation) {
+                    injectorProvider.get().getInstance(value).register(provisionInvocation.provision());
+                }
+            });
+        });
     }
 }

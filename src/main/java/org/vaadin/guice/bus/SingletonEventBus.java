@@ -1,8 +1,7 @@
 package org.vaadin.guice.bus;
 
-import com.google.common.eventbus.CancellableEventDispatcher;
-import com.google.common.eventbus.ExtendableEventBus;
-import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.eventbus.EventBus;
+import com.google.inject.Singleton;
 
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.SessionDestroyEvent;
@@ -10,8 +9,6 @@ import com.vaadin.flow.server.SessionDestroyListener;
 import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.server.VaadinSession;
-
-import org.vaadin.guice.bus.api.GlobalEvent;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -21,16 +18,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * a global eventbus that prevents memory leaks
+ * a singleton eventbus that prevents memory leaks
  */
+@Singleton
 @SuppressWarnings("unused")
-class GlobalEventBusImpl extends ExtendableEventBus implements GlobalEventBus, VaadinServiceInitListener, SessionDestroyListener {
-
-    GlobalEventBusImpl(){
-        super("vaadin-global-eventbus", MoreExecutors.directExecutor(), new CancellableEventDispatcher());
-    }
+public class SingletonEventBus extends EventBus implements org.vaadin.guice.bus.EventBus, VaadinServiceInitListener, SessionDestroyListener {
 
     private final Map<VaadinSession, Set<Object>> registeredObjectsBySession = new ConcurrentHashMap<>();
+
+    SingletonEventBus(){
+    }
 
     @Override
     public void register(Object object) {
@@ -58,11 +55,6 @@ class GlobalEventBusImpl extends ExtendableEventBus implements GlobalEventBus, V
         }
 
         super.unregister(object);
-    }
-
-    @Override
-    public void post(GlobalEvent globalEvent) {
-        super.post(globalEvent);
     }
 
     @Override

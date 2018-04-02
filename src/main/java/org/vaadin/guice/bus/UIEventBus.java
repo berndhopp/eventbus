@@ -1,19 +1,13 @@
 package org.vaadin.guice.bus;
 
-import org.vaadin.guice.bus.api.UIEvent;
+import com.google.common.eventbus.EventBus;
 
-/**
- * This class serves as a means to allow UI-scope communication between objects. UIEventBus is
- * intended for events that are of 'UI-scope' interest, like updates to data that is used by only
- * the current UI.
- *
- * <code> {@literal @}Inject private UIEventBus uiIEventBus;
- *
- * ... uiIEventBus.post(new DataSetInUIScopeChangedEvent()); ...
- *
- * </code> </pre>
- *
- * @author Bernd Hopp (bernd@vaadin.com)
- */
-public interface UIEventBus extends EventBus<UIEvent> {
+import com.vaadin.guice.annotation.UIScope;
+
+@UIScope
+@SuppressWarnings("unused")
+public final class UIEventBus extends EventBus implements org.vaadin.guice.bus.EventBus {
+
+    UIEventBus(){
+    }
 }
